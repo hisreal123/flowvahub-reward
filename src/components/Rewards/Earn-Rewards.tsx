@@ -5,6 +5,7 @@ import { Button } from '../ui/button'
 import { EarnMorePointsCard } from './EarnMorePointsCard'
 import { Share2, Star, Link2, UsersRound, CopyIcon, Check } from 'lucide-react'
 import { SpotlightCard } from './SpotlightCard'
+import { toast } from 'sonner'
 
 const EarnRewards = () => {
   const [isCopied, setIsCopied] = useState(false)
@@ -14,9 +15,11 @@ const EarnRewards = () => {
     try {
       await navigator.clipboard.writeText(referralLink)
       setIsCopied(true)
+      toast.success('Copied to clipboard!')
       setTimeout(() => setIsCopied(false), 2000)
     } catch (err) {
       console.error('Failed to copy:', err)
+      toast.error('Failed to copy link')
     }
   }
 

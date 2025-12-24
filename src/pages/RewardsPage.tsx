@@ -27,7 +27,7 @@ export function RewardsPage() {
           onClick={() => setActiveTab('earn')}
           className={`px-6 py-3 font-medium transition-all duration-300 ease-in-out relative ${
             activeTab === 'earn'
-              ? 'tab-active text-[var(--rewards-primary)] border-b-2 border-[var(--rewards-primary)]'
+              ? 'tab-active text-rewards-primary border-b-2 border-rewards-primary'
               : 'text-muted-foreground hover:text-foreground'
           }`}
         >
@@ -37,7 +37,7 @@ export function RewardsPage() {
           onClick={() => setActiveTab('redeem')}
           className={`px-6 py-3 font-medium transition-all duration-300 ease-in-out relative ${
             activeTab === 'redeem'
-              ? 'tab-active text-[var(--rewards-primary)] border-b-2 border-[var(--rewards-primary)]'
+              ? 'tab-active text-rewards-primary border-b-2 border-rewards-primary'
               : 'text-muted-foreground hover:text-foreground'
           }`}
         >

@@ -7,6 +7,7 @@ import {
 } from '../ui/dialog'
 import { Button } from '../ui/button'
 import { Share2 } from 'lucide-react'
+import { toast } from 'sonner'
 
 interface ShareStackDialogProps {
   open: boolean
@@ -14,10 +15,14 @@ interface ShareStackDialogProps {
 }
 
 export function ShareStackDialog({ open, onOpenChange }: ShareStackDialogProps) {
-  const handleCopyLink = () => {
-    // TODO: Implement copy link functionality
-    navigator.clipboard.writeText(window.location.href)
-    // You can add a toast notification here
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href)
+      toast.success('Copied to clipboard!')
+    } catch (err) {
+      console.error('Failed to copy:', err)
+      toast.error('Failed to copy link')
+    }
   }
 
   const handleShareTwitter = () => {

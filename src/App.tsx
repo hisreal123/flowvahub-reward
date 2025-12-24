@@ -3,6 +3,7 @@ import { DashboardLayout } from './components/DashboardLayout'
 import { RewardsPage } from './pages/RewardsPage'
 import { LoginPage } from './pages/LoginPage'
 import { SignupPage } from './pages/SignupPage'
+import { Toaster } from './components/ui/sonner'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         </Route>
         <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
+      <Toaster />
     </BrowserRouter>
   )
 }
