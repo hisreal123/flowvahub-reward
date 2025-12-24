@@ -1,15 +1,33 @@
 import { useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
-import { LogOut, LayoutDashboard, Menu, X } from 'lucide-react'
+import { LogOut, Menu, X, Loader2Icon } from 'lucide-react'
 import logoImage from '../assets/images/image.png'
+import { useAuth } from '../context/AuthContext'
 
 export function DashboardLayout() {
   const navigate = useNavigate()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const { signOut, loading } = useAuth()
 
-  const handleLogout = () => {
-    // TODO: Implement logout logic
-    navigate('/login')
+  const handleLogout = async () => {
+    try {
+      await signOut()
+      navigate('/login')
+    } catch (error) {
+      console.error('Logout error:', error)
+    }
+  }
+
+  // Show loader while checking authentication
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2Icon className="w-8 h-8 animate-spin text-rewards-primary" />
+          <p className="text-gray-600">Retrieving your account...</p>
+        </div>
+      </div>
+    )
   }
 
   const toggleSidebar = () => {

@@ -4,14 +4,18 @@ import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { toast } from 'sonner'
 import logoImage from '../assets/images/image.png'
+import { useAuth } from '../context/AuthContext.tsx'
+import { Loader2Icon } from 'lucide-react'
 
 export function SignupPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
+  const { signUp } = useAuth()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     if (password !== confirmPassword) {
@@ -19,10 +23,18 @@ export function SignupPage() {
       return
     }
 
-    // TODO: Implement Supabase authentication
-    console.log('Signup:', { email, password })
-    // For now, just navigate to rewards
-    navigate('/rewards')
+    try {
+      setLoading(true)
+      try {
+        await signUp(email, password)
+        navigate('/login')
+      } catch (error: unknown) {
+        toast.error((error as Error).message)
+        return
+      }
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -92,9 +104,10 @@ export function SignupPage() {
 
           <Button 
             type="submit" 
+            disabled={loading}
             className="w-full bg-rewards-primary hover:bg-[#7a0fe0] text-white font-semibold py-6 rounded-lg transition-all duration-200"
           >
-            Sign Up
+            {loading ? <Loader2Icon className="size-4 animate-spin" /> : 'Sign Up'}
           </Button>
         </form>
 

@@ -3,18 +3,33 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import logoImage from '../assets/images/image.png'
+import { useAuth } from '../context/AuthContext.tsx'
+import { toast } from 'sonner'
+import { Loader2Icon } from 'lucide-react'
 
 export function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
+  const { signIn } = useAuth()
 
-  const handleSubmit = (e: React.FormEvent) => {
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: Implement Supabase authentication
-    console.log('Login:', { email, password })
-    // For now, just navigate to rewards
-    navigate('/rewards')
+    
+    try {
+      setLoading(true)
+      try {
+        await signIn(email, password)
+        navigate('/rewards')
+      } catch (error: unknown) {
+        toast.error((error as Error).message)
+        return
+      }
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -69,9 +84,10 @@ export function LoginPage() {
 
           <Button 
             type="submit" 
+            disabled={loading}
             className="w-full bg-rewards-primary hover:bg-[#7a0fe0] text-white font-semibold py-6 rounded-lg transition-all duration-200"
           >
-            Sign In
+            {loading ? <Loader2Icon className="size-4 animate-spin" /> : 'Sign In'}
           </Button>
         </form>
 
