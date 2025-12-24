@@ -12,7 +12,7 @@ Recreate the Rewards page from flowvahub.com with identical UI and functionality
 ## Core Requirements
 
 ### 1. UI/UX
-- Pixel-perfect recreation of the Rewards page from https://www.flowvahub.com
+- Pixel-perfect recreation of the Rewards page from https://app.flowvahub.com/dashboard/earn-rewards
 - Responsive design matching the original
 - All visual elements, spacing, colors, and typography must match
 
@@ -75,9 +75,3 @@ Recreate the Rewards page from flowvahub.com with identical UI and functionality
 
 ## Timeline
 **Deadline**: December 26
-
-## Questions to Answer (if unclear from original)
-- What specific rewards functionality exists? (points, redemption, history, etc.)
-- Are there user roles or permissions?
-- What data should be displayed?
-- Are there any animations or transitions to replicate?

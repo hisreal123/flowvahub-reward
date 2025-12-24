@@ -1,0 +1,475 @@
+  
+import { useState } from 'react'
+import { RewardCard } from './RewardCard'
+import { Button } from '../ui/button'
+import { EarnMorePointsCard } from './EarnMorePointsCard'
+import { Share2, Star, Link2, UsersRound, CopyIcon, Check } from 'lucide-react'
+import { SpotlightCard } from './SpotlightCard'
+
+const EarnRewards = () => {
+  const [isCopied, setIsCopied] = useState(false)
+  const referralLink = 'https://app.flowvahub.com/signup/?ref=georg2343'
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(referralLink)
+      setIsCopied(true)
+      setTimeout(() => setIsCopied(false), 2000)
+    } catch (err) {
+      console.error('Failed to copy:', err)
+    }
+  }
+
+  return (
+    <>
+    <main>
+      <div>
+        <h2 className="text-lg md:text-2xl my-3 text-black border-l-4 border-l-rewards-primary pl-3 font-semibold">
+          Your Rewards Journey
+        </h2>
+      </div>
+
+      {/* card grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <RewardCard
+          title="Point Balance"
+          icon={
+           <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="award" className="svg-inline--fa fa-award h-5 w-5 text-rewards-primary" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M173.8 5.5c11-7.3 25.4-7.3 36.4 0L228 17.2c6 3.9 13 5.8 20.1 5.4l21.3-1.3c13.2-.8 25.6 6.4 31.5 18.2l9.6 19.1c3.2 6.4 8.4 11.5 14.7 14.7L344.5 83c11.8 5.9 19 18.3 18.2 31.5l-1.3 21.3c-.4 7.1 1.5 14.2 5.4 20.1l11.8 17.8c7.3 11 7.3 25.4 0 36.4L366.8 228c-3.9 6-5.8 13-5.4 20.1l1.3 21.3c.8 13.2-6.4 25.6-18.2 31.5l-19.1 9.6c-6.4 3.2-11.5 8.4-14.7 14.7L301 344.5c-5.9 11.8-18.3 19-31.5 18.2l-21.3-1.3c-7.1-.4-14.2 1.5-20.1 5.4l-17.8 11.8c-11 7.3-25.4 7.3-36.4 0L156 366.8c-6-3.9-13-5.8-20.1-5.4l-21.3 1.3c-13.2 .8-25.6-6.4-31.5-18.2l-9.6-19.1c-3.2-6.4-8.4-11.5-14.7-14.7L39.5 301c-11.8-5.9-19-18.3-18.2-31.5l1.3-21.3c.4-7.1-1.5-14.2-5.4-20.1L5.5 210.2c-7.3-11-7.3-25.4 0-36.4L17.2 156c3.9-6 5.8-13 5.4-20.1l-1.3-21.3c-.8-13.2 6.4-25.6 18.2-31.5l19.1-9.6C65 70.2 70.2 65 73.4 58.6L83 39.5c5.9-11.8 18.3-19 31.5-18.2l21.3 1.3c7.1 .4 14.2-1.5 20.1-5.4L173.8 5.5zM272 192a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM1.3 441.8L44.4 339.3c.2 .1 .3 .2 .4 .4l9.6 19.1c11.7 23.2 36 37.3 62 35.8l21.3-1.3c.2 0 .5 0 .7 .2l17.8 11.8c5.1 3.3 10.5 5.9 16.1 7.7l-37.6 89.3c-2.3 5.5-7.4 9.2-13.3 9.7s-11.6-2.2-14.8-7.2L74.4 455.5l-56.1 8.3c-5.7 .8-11.4-1.5-15-6s-4.3-10.7-2.1-16zm248 60.4L211.7 413c5.6-1.8 11-4.3 16.1-7.7l17.8-11.8c.2-.1 .4-.2 .7-.2l21.3 1.3c26 1.5 50.3-12.6 62-35.8l9.6-19.1c.1-.2 .2-.3 .4-.4l43.2 102.5c2.2 5.3 1.4 11.4-2.1 16s-9.3 6.9-15 6l-56.1-8.3-32.2 49.2c-3.2 5-8.9 7.7-14.8 7.2s-11-4.3-13.3-9.7z"></path></svg>
+          }
+        >
+
+          <div className="flex items-center justify-between">
+            <div className="font-extrabold text-[36px] text-rewards-primary my-2.5">
+              10
+            </div>
+            <div className="bg-transparent m-0 outline-none overflow-hidden h-[100px] w-[100px] flex items-center justify-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                xmlnsXlink="http://www.w3.org/1999/xlink"
+                viewBox="0 0 480 480"
+                width="480"
+                height="480"
+                preserveAspectRatio="xMidYMid meet"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  transform: 'translate3d(0px, 0px, 0px)',
+                  contentVisibility: 'visible',
+                }}
+              >
+                <defs>
+                  <clipPath id="__lottie_element_2">
+                    <rect width="480" height="480" x="0" y="0"></rect>
+                  </clipPath>
+                  <linearGradient
+                    id="__lottie_element_9"
+                    spreadMethod="pad"
+                    gradientUnits="userSpaceOnUse"
+                    x1="-50.06999969482422"
+                    y1="-91.03900146484375"
+                    x2="70.08200073242188"
+                    y2="67.8030014038086"
+                  >
+                    <stop offset="0%" stopColor="rgb(255,234,0)"></stop>
+                    <stop offset="50%" stopColor="rgb(255,199,0)"></stop>
+                    <stop offset="100%" stopColor="rgb(255,165,0)"></stop>
+                  </linearGradient>
+                  <linearGradient
+                    id="__lottie_element_16"
+                    spreadMethod="pad"
+                    gradientUnits="userSpaceOnUse"
+                    x1="-36.17599868774414"
+                    y1="-68.43900299072266"
+                    x2="52.7599983215332"
+                    y2="47.957000732421875"
+                  >
+                    <stop offset="0%" stopColor="rgb(255,233,0)"></stop>
+                    <stop offset="50%" stopColor="rgb(255,199,0)"></stop>
+                    <stop offset="100%" stopColor="rgb(255,166,0)"></stop>
+                  </linearGradient>
+                  <linearGradient
+                    id="__lottie_element_20"
+                    spreadMethod="pad"
+                    gradientUnits="userSpaceOnUse"
+                    x1="4"
+                    y1="-55"
+                    x2="4"
+                    y2="35.52299880981445"
+                  >
+                    <stop offset="0%" stopColor="rgb(255,173,0)"></stop>
+                    <stop offset="50%" stopColor="rgb(255,143,0)"></stop>
+                    <stop offset="100%" stopColor="rgb(255,113,0)"></stop>
+                  </linearGradient>
+                  <g id="__lottie_element_27">
+                    <g
+                      transform="matrix(1,0,0,1,237,247)"
+                      opacity="1"
+                      style={{ display: 'block' }}
+                    >
+                      <g opacity="1" transform="matrix(1,0,0,1,0,0)">
+                        <path
+                          fill="rgb(35,21,38)"
+                          fillOpacity="1"
+                          d=" M3,-107 C-52.22800064086914,-107 -97,-62.229000091552734 -97,-7 C-97,48.22800064086914 -52.22800064086914,93 3,93 C58.22800064086914,93 103,48.22800064086914 103,-7 C103,-62.229000091552734 58.22800064086914,-107 3,-107z M3,73 C-41.18299865722656,73 -77,37.18299865722656 -77,-7 C-77,-51.18299865722656 -41.18299865722656,-87 3,-87 C47.18299865722656,-87 83,-51.18299865722656 83,-7 C83,37.18299865722656 47.18299865722656,73 3,73z"
+                        ></path>
+                      </g>
+                      <g opacity="1" transform="matrix(1,0,0,1,0,0)">
+                        <path
+                          fill="rgb(35,21,38)"
+                          fillOpacity="1"
+                          d=" M3,-79.5 C-37.04100036621094,-79.5 -69.5,-47.04100036621094 -69.5,-7 C-69.5,33.04100036621094 -37.04100036621094,65.5 3,65.5 C43.04100036621094,65.5 75.5,33.04100036621094 75.5,-7 C75.5,-47.04100036621094 43.04100036621094,-79.5 3,-79.5z"
+                        ></path>
+                      </g>
+                    </g>
+                  </g>
+                  <linearGradient
+                    id="__lottie_element_33"
+                    spreadMethod="pad"
+                    gradientUnits="userSpaceOnUse"
+                    x1="0"
+                    y1="0"
+                    x2="100"
+                    y2="0"
+                  >
+                    <stop offset="0%" stopColor="rgb(255,234,0)"></stop>
+                    <stop offset="50%" stopColor="rgb(255,228,0)"></stop>
+                    <stop offset="100%" stopColor="rgb(255,221,0)"></stop>
+                  </linearGradient>
+                  <linearGradient
+                    id="__lottie_element_37"
+                    spreadMethod="pad"
+                    gradientUnits="userSpaceOnUse"
+                    x1="0"
+                    y1="0"
+                    x2="100"
+                    y2="0"
+                  >
+                    <stop offset="0%" stopColor="rgb(255,234,0)"></stop>
+                    <stop offset="50%" stopColor="rgb(255,228,0)"></stop>
+                    <stop offset="100%" stopColor="rgb(255,221,0)"></stop>
+                  </linearGradient>
+                  <mask id="__lottie_element_27_1" maskUnits="userSpaceOnUse">
+                    <use xlinkHref="#__lottie_element_27"></use>
+                  </mask>
+                </defs>
+                <g clipPath="url(#__lottie_element_2)">
+                  <g
+                    transform="matrix(1,0,0,1,237,247)"
+                    opacity="1"
+                    style={{ display: 'block' }}
+                  >
+                    <g opacity="1" transform="matrix(1,0,0,1,0,0)">
+                      <path
+                        fill="rgb(255,159,0)"
+                        fillOpacity="1"
+                        d=" M2.875,93 C-1.5,93 2.875,93 2.875,93 C2.875,93 2.875,53 2.875,-7.051000118255615 C2.875,-67 2.875,-107 2.875,-107 C2.875,-107 -1.25,-107 2.875,-107 C60,-107 102.75,-58.25 102.75,-7.25 C102.75,45.5 59.5,93 2.875,93z"
+                      ></path>
+                    </g>
+                  </g>
+                  <g
+                    transform="matrix(1,0,0,1,237,247)"
+                    opacity="1"
+                    style={{ display: 'block' }}
+                  >
+                    <g opacity="1" transform="matrix(1,0,0,1,0,0)">
+                      <path
+                        fill="url(#__lottie_element_9)"
+                        fillOpacity="1"
+                        d=" M103,-7 C103,48.22800064086914 58.22800064086914,93 3,93 C-52.22800064086914,93 -97,48.22800064086914 -97,-7 C-97,-62.22800064086914 -52.22800064086914,-107 3,-107 C58.22800064086914,-107 103,-62.22800064086914 103,-7z"
+                      ></path>
+                    </g>
+                  </g>
+                  <g
+                    transform="matrix(1,0,0,1,237,247)"
+                    opacity="1"
+                    style={{ display: 'block' }}
+                  >
+                    <g opacity="1" transform="matrix(1,0,0,1,0,0)">
+                      <path
+                        fill="rgb(255,187,0)"
+                        fillOpacity="1"
+                        d=" M83,-7 C83,37.18299865722656 47.18299865722656,73 3,73 C-41.18299865722656,73 -77,37.18299865722656 -77,-7 C-77,-51.18299865722656 -41.18299865722656,-87 3,-87 C47.18299865722656,-87 83,-51.18299865722656 83,-7z"
+                      ></path>
+                    </g>
+                  </g>
+                  <g
+                    transform="matrix(1,0,0,1,237,247)"
+                    opacity="1"
+                    style={{ display: 'block' }}
+                  >
+                    <g opacity="1" transform="matrix(1,0,0,1,0,0)">
+                      <path
+                        fill="url(#__lottie_element_16)"
+                        fillOpacity="1"
+                        d=" M75.5,-7 C75.5,33.04100036621094 43.04100036621094,65.5 3,65.5 C-37.04100036621094,65.5 -69.5,33.04100036621094 -69.5,-7 C-69.5,-47.04100036621094 -37.04100036621094,-79.5 3,-79.5 C43.04100036621094,-79.5 75.5,-47.04100036621094 75.5,-7z"
+                      ></path>
+                    </g>
+                  </g>
+                  <g
+                    transform="matrix(1,0,0,1,237,247)"
+                    opacity="1"
+                    style={{ display: 'block' }}
+                  >
+                    <g opacity="1" transform="matrix(1,0,0,1,0,0)">
+                      <path
+                        fill="url(#__lottie_element_20)"
+                        fillOpacity="1"
+                        d=" M6.63100004196167,-53.02000045776367 C6.63100004196167,-53.02000045776367 18.6200008392334,-28.726999282836914 18.6200008392334,-28.726999282836914 C19.39299964904785,-27.15999984741211 20.88800048828125,-26.072999954223633 22.618000030517578,-25.82200050354004 C22.618000030517578,-25.82200050354004 49.428001403808594,-21.926000595092773 49.428001403808594,-21.926000595092773 C51.60599899291992,-21.610000610351562 52.474998474121094,-18.93400001525879 50.89899826049805,-17.398000717163086 C50.89899826049805,-17.398000717163086 31.5,1.5119999647140503 31.5,1.5119999647140503 C30.249000549316406,2.7320001125335693 29.67799949645996,4.488999843597412 29.972999572753906,6.211999893188477 C29.972999572753906,6.211999893188477 34.551998138427734,32.91299819946289 34.551998138427734,32.91299819946289 C34.92399978637695,35.082000732421875 32.64799880981445,36.736000061035156 30.700000762939453,35.71200180053711 C30.700000762939453,35.71200180053711 6.7210001945495605,23.104999542236328 6.7210001945495605,23.104999542236328 C5.173999786376953,22.29199981689453 3.3259999752044678,22.29199981689453 1.7790000438690186,23.104999542236328 C1.7790000438690186,23.104999542236328 -22.200000762939453,35.71200180053711 -22.200000762939453,35.71200180053711 C-24.148000717163086,36.736000061035156 -26.423999786376953,35.082000732421875 -26.052000045776367,32.91299819946289 C-26.052000045776367,32.91299819946289 -21.472999572753906,6.211999893188477 -21.472999572753906,6.211999893188477 C-21.17799949645996,4.488999843597412 -21.749000549316406,2.7320001125335693 -23,1.5119999647140503 C-23,1.5119999647140503 -42.39899826049805,-17.398000717163086 -42.39899826049805,-17.398000717163086 C-43.974998474121094,-18.93400001525879 -43.10599899291992,-21.610000610351562 -40.928001403808594,-21.926000595092773 C-40.928001403808594,-21.926000595092773 -14.118000030517578,-25.82200050354004 -14.118000030517578,-25.82200050354004 C-12.387999534606934,-26.072999954223633 -10.892999649047852,-27.15999984741211 -10.119999885559082,-28.726999282836914 C-10.119999885559082,-28.726999282836914 1.86899995803833,-53.02000045776367 1.86899995803833,-53.02000045776367 C2.8429999351501465,-54.99300003051758 5.6570000648498535,-54.99300003051758 6.63100004196167,-53.02000045776367z"
+                      ></path>
+                    </g>
+                  </g>
+                  <g
+                    transform="matrix(1,0,0,1,237,247)"
+                    opacity="1"
+                    style={{ display: 'block' }}
+                  >
+                    <g opacity="1" transform="matrix(1,0,0,1,0,0)">
+                      <path
+                        fill="rgb(226,101,0)"
+                        fillOpacity="1"
+                        d=" M21.1200008392334,-26.226999282836914 C21.893999099731445,-24.65999984741211 23.388999938964844,-23.572999954223633 25.118999481201172,-23.32200050354004 C25.118999481201172,-23.32200050354004 51.69300079345703,-19.459999084472656 51.69300079345703,-19.459999084472656 C51.6150016784668,-20.631999969482422 50.77399826049805,-21.729999542236328 49.428001403808594,-21.926000595092773 C49.428001403808594,-21.926000595092773 22.618999481201172,-25.82200050354004 22.618999481201172,-25.82200050354004 C22.06800079345703,-25.902000427246094 21.555999755859375,-26.093000411987305 21.069000244140625,-26.33099937438965 C21.069000244140625,-26.33099937438965 21.1200008392334,-26.226999282836914 21.1200008392334,-26.226999282836914z"
+                      ></path>
+                    </g>
+                    <g opacity="1" transform="matrix(1,0,0,1,0,0)">
+                      <path
+                        fill="rgb(226,101,0)"
+                        fillOpacity="1"
+                        d=" M-23.552000045776367,35.41299819946289 C-23.552000045776367,35.41299819946289 -18.972999572753906,8.711999893188477 -18.972999572753906,8.711999893188477 C-18.67799949645996,6.988999843597412 -19.24799919128418,5.23199987411499 -20.5,4.01200008392334 C-20.5,4.01200008392334 -22.767000198364258,1.8020000457763672 -22.767000198364258,1.8020000457763672 C-21.69700050354004,3.003000020980835 -21.198999404907227,4.61299991607666 -21.472999572753906,6.211999893188477 C-21.472999572753906,6.211999893188477 -26.052000045776367,32.91299819946289 -26.052000045776367,32.91299819946289 C-26.33799934387207,34.57899856567383 -25.05900001525879,35.928001403808594 -23.56800079345703,36.00600051879883 C-23.577999114990234,35.8120002746582 -23.586999893188477,35.61800003051758 -23.552000045776367,35.41299819946289z"
+                      ></path>
+                    </g>
+                    <g opacity="1" transform="matrix(1,0,0,1,0,0)">
+                      <path
+                        fill="rgb(253,127,24)"
+                        fillOpacity="1"
+                        d=" M-38.428001403808594,-19.426000595092773 C-38.428001403808594,-19.426000595092773 -11.619000434875488,-23.32200050354004 -11.619000434875488,-23.32200050354004 C-9.888999938964844,-23.572999954223633 -8.394000053405762,-24.65999984741211 -7.619999885559082,-26.226999282836914 C-7.619999885559082,-26.226999282836914 4.36899995803833,-50.52000045776367 4.36899995803833,-50.52000045776367 C4.927000045776367,-51.6510009765625 6.086999893188477,-52.111000061035156 7.160999774932861,-51.94599914550781 C7.160999774932861,-51.94599914550781 6.63100004196167,-53.02000045776367 6.63100004196167,-53.02000045776367 C5.6570000648498535,-54.99300003051758 2.8429999351501465,-54.99300003051758 1.86899995803833,-53.02000045776367 C1.86899995803833,-53.02000045776367 -10.119999885559082,-28.726999282836914 -10.119999885559082,-28.726999282836914 C-10.894000053405762,-27.15999984741211 -12.388999938964844,-26.072999954223633 -14.119000434875488,-25.82200050354004 C-14.119000434875488,-25.82200050354004 -40.928001403808594,-21.926000595092773 -40.928001403808594,-21.926000595092773 C-43.10599899291992,-21.610000610351562 -43.974998474121094,-18.93400001525879 -42.39899826049805,-17.398000717163086 C-42.39899826049805,-17.398000717163086 -40.09299850463867,-15.14900016784668 -40.09299850463867,-15.14900016784668 C-41.356998443603516,-16.70800018310547 -40.49599838256836,-19.125999450683594 -38.428001403808594,-19.426000595092773z"
+                      ></path>
+                    </g>
+                  </g>
+                  <g mask="url(#__lottie_element_27_1)" style={{ display: 'block' }}>
+                    <g
+                      transform="matrix(0.6427876353263855,-0.7660444378852844,0.9651317000389099,0.8098416328430176,226.91282653808594,290.40985107421875)"
+                      opacity="0.5"
+                    >
+                      <g opacity="1" transform="matrix(1,0,0,1,0,0)">
+                        <path
+                          fill="rgb(255,255,255)"
+                          fillOpacity="1"
+                          d=" M242,93 C242,93 162,93 162,93 C162,93 162,-107 162,-107 C162,-107 242,-107 242,-107 C242,-107 242,93 242,93z"
+                        ></path>
+                      </g>
+                    </g>
+                  </g>
+                  <g
+                    transform="matrix(1.3404929637908936,1.4842610359191895,-1.4842610359191895,1.3404929637908936,450.6817626953125,-93.41481018066406)"
+                    opacity="0.009000000000265516"
+                    style={{ display: 'none' }}
+                  >
+                    <g opacity="1" transform="matrix(1,0,0,1,0,0)">
+                      <path
+                        fill="url(#__lottie_element_33)"
+                        fillOpacity="1"
+                        d=" M60,110 C58,117 57,118 50,120 C57,122 58,123 60,130 C62,123 63,122 70,120 C63,118 62,117 60,110z"
+                      ></path>
+                    </g>
+                  </g>
+                  <g
+                    transform="matrix(0.802391529083252,1.3842425346374512,-1.3842425346374512,0.802391529083252,237.96560668945312,106.15846252441406)"
+                    opacity="0.010333333333491623"
+                    style={{ display: 'none' }}
+                  >
+                    <g opacity="1" transform="matrix(1,0,0,1,0,0)">
+                      <path
+                        fill="url(#__lottie_element_37)"
+                        fillOpacity="1"
+                        d=" M60,110 C58,117 57,118 50,120 C57,122 58,123 60,130 C62,123 63,122 70,120 C63,118 62,117 60,110z"
+                      ></path>
+                    </g>
+                  </g>
+                </g>
+              </svg>
+            </div>
+          </div>
+
+            {/* progress bar */}
+            <div className="mt-10">
+              <div className="flex justify-between text-sm mb-1">
+                <span className="text-gray-600">
+                  Progress to
+                  <span className="font-medium">$5 Gift Card</span>
+                </span>
+                <span className="font-medium">10/5000</span>
+              </div>
+              <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-br from-rewards-primary to-[#FF9FF5] rounded-full transition-[width] duration-500 ease-in-out"
+                  style={{ width: '0.2%' }}
+                />
+              </div>
+              <p className="text-xs text-gray-500 mt-2">
+                🚀 Just getting started — keep earning points!
+              </p>
+                </div>
+        </RewardCard>
+        <RewardCard
+          title="Daily Streak"
+          icon={
+            <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="calendar" className="svg-inline--fa fa-calendar  text-[#70D6FF] h-5 w-5 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40L64 64C28.7 64 0 92.7 0 128l0 16 0 48L0 448c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-256 0-48 0-16c0-35.3-28.7-64-64-64l-40 0 0-40c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40L152 64l0-40zM48 192l352 0 0 256c0 8.8-7.2 16-16 16L64 464c-8.8 0-16-7.2-16-16l0-256z"></path></svg>
+          }
+        >
+
+          <div>
+            <div className="items-center mt-6 mx-4">
+              <div className="font-extrabold text-[36px] text-rewards-primary mb-2">
+                2 Days
+              </div>
+            </div>
+
+     
+            <div className="mt-6">
+              <div className="flex mt-4 space-x-2 justify-center mb-4">
+                {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, index) => {
+                  const currentDay = new Date().getDay()
+                  // Convert Sunday (0) to 6, Monday (1) to 0, etc.
+                  const adjustedCurrentDay = currentDay === 0 ? 6 : currentDay - 1
+                  const isCurrentDay = index === adjustedCurrentDay
+
+                  return (
+                    <div
+                      key={index}
+                      className={`h-10 w-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-200 bg-gray-200 text-gray-500 ${
+                        isCurrentDay
+                          ? 'ring-2 ring-rewards-primary ring-offset-2'
+                          : ''
+                      }`}
+                    >
+                      {day}
+                    </div>
+                  )
+                })}
+              </div>
+              <p className="text-sm text-gray-600 text-center mt-3">
+                Check in daily to earn +5 points
+              </p>
+              <Button
+                variant="outline"
+                className="mt-3 w-full rounded-full font-semibold flex items-center justify-center gap-2 transition-all duration-200 bg-gray-300 text-gray-500 cursor-not-allowed"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="lucide lucide-zap h-5 w-5"
+                >
+                  <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
+                </svg>
+                Claimed Today
+              </Button>
+            </div>
+            
+          </div>
+        </RewardCard>
+
+        <SpotlightCard />
+      </div>
+    </main>
+
+    <main className="mt-6">
+      <div>
+        <h2 className="text-lg md:text-2xl my-3 text-black border-l-4 border-l-rewards-primary pl-3 font-semibold">
+          Earn More Points
+        </h2>
+
+        {/* Earn more cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+           <EarnMorePointsCard title="Refer and win 10,000 points!" icon={
+            <Star className="text-rewards-primary" size={24}/>
+           }>
+            <div className='p-4'>
+              <p className='font-medium text-sm'>Invite 3 friends by Nov 20 and earn a chance to be one of 5 winners of <span className="text-rewards-primary">10,000 points</span>. Friends must complete onboarding to qualify.</p>
+            </div>
+          </EarnMorePointsCard>
+
+           <EarnMorePointsCard title="Share Your Stack!" subTitle="Earn +25 pts" icon={
+            <Share2 className="text-rewards-primary" size={24}/>
+           }>
+            <div className='p-4 flex items-center justify-between group'>
+              <p className='font-medium text-sm'>Share your tool stack</p>
+              <Button variant="outline" onClick={() => {}} className="group bg-rewards-primary-light hover:text-white hover:bg-rewards-primary text-rewards-primary rounded-full font-semibold text-sm transition-all duration-200 inline-flex items-center border-0">
+                <Share2 className='stroke-rewards-primary group-hover:stroke-white transition-colors duration-200' size={16}/>
+                Share
+              </Button>
+            </div>
+          </EarnMorePointsCard>
+        </div>
+      </div>
+    </main>
+
+
+    <main className="mt-6">
+      <div
+      className="hover:translate-y-[-5px] hover:shadow-[0_10px_25px_rgba(0,_0,_0,_0.1)] ease-linear duration-200 border border-[#e5e7eb] rounded-xl overflow-hidden"
+      >
+        <div
+          className="p-4 bg-rewards-primary-light border-b border-gray-200 flex items-center gap-3"
+        >
+          <h3 className="text-base font-semibold flex items-center gap-2 text-gray-700">
+            <span className='w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 bg-rewards-primary-icon-bg'>
+              <UsersRound className="text-rewards-primary" size={24}/>
+            </span>
+            <div className='flex flex-col items-start'>
+              <span className='text-base'>Share Your Link</span>
+              <p className="text-sm text-gray-500">Invite friends and earn 25 points when they join!</p>
+            </div>
+          </h3>
+        </div>
+        <div className="p-3">
+          <div className='flex items-center justify-around'>
+            <div className='flex items-center gap-2 flex-col'>
+              <p className='text-[36px] font-medium text-rewards-primary'>0</p>
+              <p className='text-sm text-gray-500'>Referrals</p>
+            </div>
+            <div className='flex items-center gap-2 flex-col'>
+              <p className='text-[36px] font-medium text-rewards-primary'>0</p>
+              <p className='text-sm text-gray-500'>Points Earned</p>
+            </div>
+          </div>
+        </div>
+
+        <div className='p-4'>
+          <p className='text-sm text-gray-500 mb-2'>Your personal referral link:</p>
+          <div className="bg-white border border-gray-200 hover:border-rewards-primary p-2 flex justify-between items-center gap-2 rounded-md transition-colors duration-200">
+            <div className='flex items-center gap-2 flex-1 min-w-0'>
+              <Link2 className='stroke-rewards-primary flex-shrink-0' size={18}/>
+              <input
+                type="text"
+                value={referralLink}
+                readOnly
+                className="text-sm text-gray-800 bg-transparent border-0 outline-none flex-1 min-w-0"
+              />
+            </div>
+            <button
+              onClick={handleCopyLink}
+              className="flex-shrink-0 p-1 hover:bg-gray-100 rounded transition-colors duration-200"
+              aria-label="Copy referral link"
+            >
+              {isCopied ? (
+                <Check className='stroke-green-500' size={18}/>
+              ) : (
+                <CopyIcon className='stroke-rewards-primary transition-colors duration-200' size={18}/>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+     </main>
+   </>
+   )
+ }
+ 
+ export default EarnRewards
