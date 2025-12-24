@@ -1,15 +1,22 @@
   
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { RewardCard } from './RewardCard'
 import { Button } from '../ui/button'
 import { EarnMorePointsCard } from './EarnMorePointsCard'
 import { Share2, Star, Link2, UsersRound, CopyIcon, Check } from 'lucide-react'
 import { SpotlightCard } from './SpotlightCard'
 import { toast } from 'sonner'
+import { useAuth } from '../../context/AuthContext'
+import { supabase } from '../../supabaseClient'
 
 const EarnRewards = () => {
   const [isCopied, setIsCopied] = useState(false)
   const referralLink = 'https://app.flowvahub.com/signup/?ref=georg2343'
+  const { session } = useAuth()
+  const [isClaimed, setIsClaimed] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [totalPoints, setTotalPoints] = useState(0)
+  const [streakDays, setStreakDays] = useState(0)
 
   const handleCopyLink = async () => {
     try {
@@ -20,6 +27,236 @@ const EarnRewards = () => {
     } catch (err) {
       console.error('Failed to copy:', err)
       toast.error('Failed to copy link')
+    }
+  }
+
+  // Fetch user points and streak
+  const fetchUserData = async () => {
+    if (!session?.user) {
+      return
+    }
+
+    try {
+      // Fetch total reward points
+      const { data: pointsData, error: pointsError } = await supabase
+        .from('daily_activity')
+        .select('reward_points')
+        .eq('user_id', session.user.id)
+
+      if (pointsError) {
+        console.error('Error fetching points:', pointsError)
+      } else {
+        const total = pointsData?.reduce((sum, activity) => sum + (activity.reward_points || 0), 0) || 0
+        setTotalPoints(total)
+      }
+
+      // Calculate streak (consecutive days with activities)
+      const { data: activitiesData, error: streakError } = await supabase
+        .from('daily_activity')
+        .select('activity_date')
+        .eq('user_id', session.user.id)
+        .order('activity_date', { ascending: false })
+
+      if (streakError) {
+        console.error('Error fetching streak:', streakError)
+        setStreakDays(0)
+      } else if (activitiesData && activitiesData.length > 0) {
+        // Calculate consecutive days from most recent activity backwards
+        let streak = 0
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+        
+        // Get the most recent activity date
+        const mostRecentDate = new Date(activitiesData[0].activity_date + 'T00:00:00')
+        mostRecentDate.setHours(0, 0, 0, 0)
+        
+        // Check if most recent is today or yesterday (allows for streak continuation)
+        const yesterday = new Date(today)
+        yesterday.setDate(today.getDate() - 1)
+        
+        let startDate = mostRecentDate
+        if (mostRecentDate.getTime() === today.getTime()) {
+          startDate = today
+        } else if (mostRecentDate.getTime() === yesterday.getTime()) {
+          startDate = yesterday
+        } else {
+          // Most recent activity is older, streak is broken
+          setStreakDays(0)
+          return
+        }
+        
+        // Count consecutive days backwards
+        for (let i = 0; i < activitiesData.length; i++) {
+          const activityDate = new Date(activitiesData[i].activity_date + 'T00:00:00')
+          activityDate.setHours(0, 0, 0, 0)
+          
+          const expectedDate = new Date(startDate)
+          expectedDate.setDate(startDate.getDate() - i)
+          expectedDate.setHours(0, 0, 0, 0)
+
+          if (activityDate.getTime() === expectedDate.getTime()) {
+            streak++
+          } else {
+            break
+          }
+        }
+        setStreakDays(streak)
+      } else {
+        setStreakDays(0)
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error)
+    }
+  }
+
+  // Check if user has already claimed today's reward (on mount and when session changes)
+  useEffect(() => {
+    const checkTodayClaim = async () => {
+      if (!session?.user) {
+        return
+      }
+
+      try {
+        const today = new Date().toISOString().slice(0, 10)
+        const { data: existingActivity, error } = await supabase
+          .from('daily_activity')
+          .select('id')
+          .eq('user_id', session.user.id)
+          .eq('activity_date', today)
+          .single()
+
+        if (error && error.code !== 'PGRST116') {
+          // PGRST116 is "not found" error, which is expected if no record exists
+          console.error('Error checking daily claim:', error)
+          return
+        }
+
+        if (existingActivity) {
+          // User has already claimed today
+          setIsClaimed(true)
+        } else {
+          // Check 5-minute cooldown (for UI purposes only)
+          const lastClaimTime = localStorage.getItem('lastDailyClaimTime')
+          if (lastClaimTime) {
+            const timeDiff = Date.now() - parseInt(lastClaimTime, 10)
+            const fiveMinutes = 5 * 60 * 1000 // 5 minutes in milliseconds
+            if (timeDiff < fiveMinutes) {
+              setIsClaimed(true)
+              // Auto-enable button after 5 minutes (but database check will still prevent duplicate)
+              const remainingTime = fiveMinutes - timeDiff
+              setTimeout(() => {
+                // Only clear if still within the same day
+                const today = new Date().toISOString().slice(0, 10)
+                supabase
+                  .from('daily_activity')
+                  .select('id')
+                  .eq('user_id', session.user.id)
+                  .eq('activity_date', today)
+                  .single()
+                  .then(({ data }) => {
+                    if (!data) {
+                      setIsClaimed(false)
+                      localStorage.removeItem('lastDailyClaimTime')
+                    }
+                  })
+              }, remainingTime)
+            } else {
+              localStorage.removeItem('lastDailyClaimTime')
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error checking daily claim:', error)
+      }
+    }
+
+    checkTodayClaim()
+    fetchUserData()
+  }, [session])
+
+  const handleDailyClaim = async () => {
+    if (!session?.user) {
+      toast.error('Please sign in to claim daily rewards')
+      return
+    }
+
+    if (isClaimed || isLoading) {
+      return
+    }
+
+    try {
+      setIsLoading(true)
+      const today = new Date().toISOString().slice(0, 10)
+      
+      // Check if today's activity already exists
+      const { data: existingActivity, error: checkError } = await supabase
+        .from('daily_activity')
+        .select('id')
+        .eq('user_id', session.user.id)
+        .eq('activity_date', today)
+        .single()
+
+      if (checkError && checkError.code !== 'PGRST116') {
+        // PGRST116 is "not found" error, which is expected if no record exists
+        throw checkError
+      }
+
+      if (existingActivity) {
+        toast.info('You have already claimed today\'s reward')
+        setIsClaimed(true)
+        // Don't set localStorage - database is the source of truth
+        return
+      }
+      
+      // Default values - adjust these as needed
+      const stressValue = 0
+      const rewardValue = 5 // +5 points for daily check-in
+
+      const { error } = await supabase.from('daily_activity').insert({
+        user_id: session.user.id,
+        activity_date: today,
+        stress_points: stressValue,
+        reward_points: rewardValue,
+      })
+
+      if (error) {
+        throw error
+      }
+
+      // Set claimed state and store timestamp for 5-minute UI cooldown
+      setIsClaimed(true)
+      localStorage.setItem('lastDailyClaimTime', Date.now().toString())
+      
+      // Refresh user data to update points and streak
+      await fetchUserData()
+      
+      toast.success('Daily check-in claimed! +5 points earned')
+      
+      // Auto-enable after 5 minutes (forget streak for UI purposes)
+      // But database check will still prevent duplicate claims for the same day
+      setTimeout(() => {
+        // Re-check database to see if still claimed today
+        const today = new Date().toISOString().slice(0, 10)
+        supabase
+          .from('daily_activity')
+          .select('id')
+          .eq('user_id', session.user.id)
+          .eq('activity_date', today)
+          .single()
+          .then(({ data }) => {
+            if (!data) {
+              // No record found, can enable button
+              setIsClaimed(false)
+              localStorage.removeItem('lastDailyClaimTime')
+            }
+            // If data exists, keep button disabled (already claimed today)
+          })
+      }, 5 * 60 * 1000)
+    } catch (error) {
+      console.error('Failed to claim daily reward:', error)
+      toast.error((error as Error).message || 'Failed to claim daily reward')
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -43,7 +280,7 @@ const EarnRewards = () => {
 
           <div className="flex items-center justify-between">
             <div className="font-extrabold text-[36px] text-rewards-primary my-2.5">
-              10
+              {totalPoints}
             </div>
             <div className="bg-transparent m-0 outline-none overflow-hidden h-[100px] w-[100px] flex items-center justify-center">
               <svg
@@ -300,12 +537,12 @@ const EarnRewards = () => {
                   Progress to
                   <span className="font-medium">$5 Gift Card</span>
                 </span>
-                <span className="font-medium">10/5000</span>
+                <span className="font-medium">{totalPoints}/5000</span>
               </div>
               <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-gradient-to-br from-rewards-primary to-[#FF9FF5] rounded-full transition-[width] duration-500 ease-in-out"
-                  style={{ width: '0.2%' }}
+                  style={{ width: `${Math.min((totalPoints / 5000) * 100, 100)}%` }}
                 />
               </div>
               <p className="text-xs text-gray-500 mt-2">
@@ -323,7 +560,7 @@ const EarnRewards = () => {
           <div>
             <div className="items-center mt-6 mx-4">
               <div className="font-extrabold text-[36px] text-rewards-primary mb-2">
-                2 Days
+                {streakDays} {streakDays === 1 ? 'Day' : 'Days'}
               </div>
             </div>
 
@@ -354,24 +591,76 @@ const EarnRewards = () => {
                 Check in daily to earn +5 points
               </p>
               <Button
+                onClick={handleDailyClaim}
+                disabled={isClaimed || isLoading}
                 variant="outline"
-                className="mt-3 w-full rounded-full font-semibold flex items-center justify-center gap-2 transition-all duration-200 bg-gray-300 text-gray-500 cursor-not-allowed"
+                className={`mt-3 w-full rounded-full font-semibold flex items-center justify-center gap-2 transition-all duration-200 ${
+                  isClaimed || isLoading
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-rewards-primary hover:bg-[#7a0fe0] text-white cursor-pointer'
+                }`}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-zap h-5 w-5"
-                >
-                  <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
-                </svg>
-                Claimed Today
+                {isLoading ? (
+                  <>
+                    <svg
+                      className="animate-spin h-5 w-5"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Claiming...
+                  </>
+                ) : isClaimed ? (
+                  <>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="lucide lucide-zap h-5 w-5"
+                    >
+                      <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
+                    </svg>
+                    Claimed Today
+                  </>
+                ) : (
+                  <>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="lucide lucide-zap h-5 w-5"
+                    >
+                      <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
+                    </svg>
+                    Claim Daily Reward
+                  </>
+                )}
               </Button>
             </div>
             
