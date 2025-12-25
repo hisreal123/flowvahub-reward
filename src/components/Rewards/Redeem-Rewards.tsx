@@ -4,13 +4,6 @@ import { useState } from 'react'
 const RedeemRewards = () => {
   const [activeCategory, setActiveCategory] = useState<'all' | 'unlocked' | 'locked' | 'coming-soon'>('all')
 
-  const rewardCounts = {
-    all: 12,
-    unlocked: 5,
-    locked: 4,
-    'coming-soon': 3,
-  }
-
   const rewards = [
     { id: 1, title: '$5 Bank Transfer', subTitle: 'The $5 equivalent will be transferred to your bank account.', icon: <Banknote className='text-rewards-primary' size={24} />, points: 500, status: 'locked' },
     { id: 2, title: '$5 Paypal International', subTitle: 'Receive a $5 PayPal balance transfer directly to your PayPal account email.', icon: <Banknote className='text-rewards-primary' size={24} />, points: 1000, status: 'locked' },
@@ -18,6 +11,14 @@ const RedeemRewards = () => {
     { id: 4, title: '$5 Apple Gift Card', subTitle: 'Redeem this $5 Apple Gift Card for apps, games, music, movies, and more on the App Store and iTunes.', icon: <Banknote className='text-rewards-primary' size={24} />, points: 5000, status: 'locked' },
     { id: 5, title: '$5 Google Play Card', subTitle: 'Use this $5 Google Play Card to buy apps, games, movies, books, and more on the Google Play Store.', icon: <Banknote className='text-rewards-primary' size={24} />, points: 7500, status: 'coming-soon' },
   ]
+
+  // Calculate counts dynamically from rewards data
+  const rewardCounts = {
+    all: rewards.length,
+    unlocked: rewards.filter(reward => reward.status === 'unlocked').length,
+    locked: rewards.filter(reward => reward.status === 'locked').length,
+    'coming-soon': rewards.filter(reward => reward.status === 'coming-soon').length,
+  }
 
   const filteredRewards = activeCategory === 'all' 
     ? rewards 
