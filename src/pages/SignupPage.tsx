@@ -57,9 +57,9 @@ export function SignupPage() {
     <div className="flex min-h-screen items-center justify-center bg-rewards-primary p-4">
       <div className="w-full max-w-md space-y-6 rounded-[16px] bg-white p-8 shadow-lg">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-black">Log in to flowva</h1>
-          <p className="mt-2 text-gray-600">
-            Log in to receive personalized recommendations
+          <h1 className="text-2xl text-[#6D28D9] font-semibold  mb-[8px] text-center w-full  ">Create Your Account</h1>
+          <p className="text-sm text-[#6B7280] text-center w-full ">
+            Sign up to manage your tools
           </p>
         </div>
 
@@ -74,7 +74,7 @@ export function SignupPage() {
               placeholder="your@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="border-gray-200 focus:border-rewards-primary focus:ring-rewards-primary"
+              className="h-12 peer w-full border text-base py-[10px] px-[14px]  border-[#EDE9FE] transition-all ease-linear duration-[.2s] rounded-md outline-none focus:border-[#9013fe]"
               required
             />
           </div>
@@ -90,13 +90,13 @@ export function SignupPage() {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="border-gray-200 focus:border-rewards-primary focus:ring-rewards-primary pr-20"
+                className="h-12 peer w-full border text-base py-[10px] px-[14px]  border-[#EDE9FE] transition-all ease-linear duration-[.2s] rounded-md outline-none focus:border-[#9013fe]"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors text-sm font-medium"
+                className="absolute right-3 border-none text-[#A78BFA] h-fit font-medium text-xs top-0 bottom-0 m-auto"
               >
                 {showPassword ? 'hide' : 'show'}
               </button>
@@ -114,13 +114,13 @@ export function SignupPage() {
                 placeholder="••••••••"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="border-gray-200 focus:border-rewards-primary focus:ring-rewards-primary pr-20"
+                className="h-12 peer w-full border text-base py-[10px] px-[14px]  border-[#EDE9FE] transition-all ease-linear duration-[.2s] rounded-md outline-none focus:border-[#9013fe]"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors text-sm font-medium"
+                className="absolute right-3 border-none text-[#A78BFA] h-fit font-medium text-xs top-0 bottom-0 m-auto"
               >
                 {showConfirmPassword ? 'hide' : 'show'}
               </button>
@@ -130,7 +130,7 @@ export function SignupPage() {
           <Button 
             type="submit" 
             disabled={loading}
-            className="w-full bg-rewards-primary hover:bg-[#7a0fe0] text-white font-semibold py-6 rounded-xl transition-all duration-200"
+            className="w-full text-base h-[55px]  flex justify-center gap-2 items-center p-[11px] text-center bg-[#9013FE] text-white  font-medium border-none transition-colors ease-linear duration-[.2s] rounded-[100px] hover:bg-[#6D28D9]"
           >
             {loading ? <Loader2Icon className="size-4 animate-spin" /> : 'Sign up Account'}
           </Button>

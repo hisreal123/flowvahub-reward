@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
-import { LogOut, Menu, X, Loader2Icon, MessageSquare, HelpCircle, ChevronUp } from 'lucide-react'
+import { LogOut, Menu, X, Loader2Icon, MessageSquare, HelpCircle } from 'lucide-react'
 import logoImage from '../assets/images/image.png'
 import { useAuth } from '../context/AuthContext'
 import { useUserProfile } from '../hooks/useUserProfile'
@@ -34,10 +34,17 @@ export function DashboardLayout() {
   }
 
   const getUserName = () => {
-    if (profile?.first_name && profile?.last_name) {
+    // Check if profile has valid first_name and last_name (not empty strings)
+    if (profile?.first_name?.trim() && profile?.last_name?.trim()) {
       return `${profile.first_name} ${profile.last_name}`
     }
-    return session?.user?.email?.split('@')[0] || 'User'
+    // Fallback to email prefix if available
+    if (session?.user?.email) {
+      const emailPrefix = session.user.email.split('@')[0]
+      // Capitalize first letter
+      return emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1)
+    }
+    return 'User'
   }
 
   const toggleSidebar = () => {
@@ -143,8 +150,10 @@ export function DashboardLayout() {
           </ul>
         </nav>
 
+          <div className="border-t border-[0.3px] border-border border-gray-300 w-[90%] mx-auto" />
         {/* User Profile Section */}
-        <div className="p-4 border-t border-border relative" ref={userMenuRef}>
+
+        <div className="p-4  relative" ref={userMenuRef}>
           <button
             onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
             className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-foreground hover:bg-accent transition-colors"
@@ -156,12 +165,11 @@ export function DashboardLayout() {
               <p className="text-sm font-medium text-foreground truncate">{getUserName()}</p>
               <p className="text-xs text-muted-foreground truncate">{session?.user?.email}</p>
             </div>
-            <ChevronUp className={`w-4 h-4 flex-shrink-0 transition-transform ${isUserMenuOpen ? '' : 'rotate-180'}`} />
           </button>
 
           {/* User Menu Dropdown */}
           {isUserMenuOpen && (
-            <div className="absolute bottom-full left-0 right-0 mb-2 bg-card border border-border rounded-lg shadow-lg overflow-hidden z-50">
+            <div className="absolute bottom-16 left-6 w-56 bg-white border-[#9013FE] border text-black rounded-lg shadow-lg">
               <button
                 onClick={() => {
                   setIsUserMenuOpen(false)
@@ -169,7 +177,6 @@ export function DashboardLayout() {
                 }}
                 className="w-full flex items-center gap-3 px-4 py-3 text-left text-foreground hover:bg-accent transition-colors"
               >
-                <MessageSquare className="w-4 h-4" />
                 <span className="text-sm">Feedback</span>
               </button>
               <button
@@ -179,15 +186,12 @@ export function DashboardLayout() {
                 }}
                 className="w-full flex items-center gap-3 px-4 py-3 text-left text-foreground hover:bg-accent transition-colors"
               >
-                <HelpCircle className="w-4 h-4" />
                 <span className="text-sm">Support</span>
               </button>
-              <div className="border-t border-border" />
               <button
                 onClick={handleLogout}
                 className="w-full flex items-center gap-3 px-4 py-3 text-left text-foreground hover:bg-accent transition-colors"
               >
-                <LogOut className="w-4 h-4" />
                 <span className="text-sm">Log Out</span>
               </button>
             </div>
