@@ -22,7 +22,6 @@ export function ShareStackDialog({ open, onOpenChange }: ShareStackDialogProps) 
   }
 
   const handleShareTwitter = () => {
-    // TODO: Implement Twitter share functionality
     const text = encodeURIComponent('Check out my tool stack!')
     const url = encodeURIComponent(window.location.href)
     window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank')

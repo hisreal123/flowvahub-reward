@@ -1,33 +1,43 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
-import { LogOut, Menu, X, Loader2Icon } from 'lucide-react'
+import { LogOut, Menu, X, Loader2Icon, MessageSquare, HelpCircle, ChevronUp } from 'lucide-react'
 import logoImage from '../assets/images/image.png'
 import { useAuth } from '../context/AuthContext'
+import { useUserProfile } from '../hooks/useUserProfile'
 
 export function DashboardLayout() {
   const navigate = useNavigate()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const { signOut, loading } = useAuth()
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+  const { signOut, session } = useAuth()
+  const { profile, loading: profileLoading } = useUserProfile(session)
+  const userMenuRef = useRef<HTMLDivElement>(null)
 
   const handleLogout = async () => {
     try {
       await signOut()
       navigate('/login')
+      setIsUserMenuOpen(false)
     } catch (error) {
       console.error('Logout error:', error)
     }
   }
 
-  // Show loader while checking authentication
-  if (loading) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2Icon className="w-8 h-8 animate-spin text-rewards-primary" />
-          <p className="text-gray-600">Retrieving your account...</p>
-        </div>
-      </div>
-    )
+  const getUserInitials = () => {
+    if (profile?.first_name && profile?.last_name) {
+      return `${profile.first_name[0]}${profile.last_name[0]}`.toUpperCase()
+    }
+    if (session?.user?.email) {
+      return session.user.email[0].toUpperCase()
+    }
+    return 'U'
+  }
+
+  const getUserName = () => {
+    if (profile?.first_name && profile?.last_name) {
+      return `${profile.first_name} ${profile.last_name}`
+    }
+    return session?.user?.email?.split('@')[0] || 'User'
   }
 
   const toggleSidebar = () => {
@@ -36,6 +46,35 @@ export function DashboardLayout() {
 
   const closeSidebar = () => {
     setIsSidebarOpen(false)
+  }
+
+  // Close user menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setIsUserMenuOpen(false)
+      }
+    }
+
+    if (isUserMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isUserMenuOpen])
+
+  // Show loading state while retrieving user profile data
+  if (profileLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2Icon className="w-8 h-8 animate-spin text-rewards-primary" />
+          <p className="text-gray-600">Retrieving your account...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -104,15 +143,55 @@ export function DashboardLayout() {
           </ul>
         </nav>
 
-        {/* Logout */}
-        <div className="p-4 border-t border-border">
+        {/* User Profile Section */}
+        <div className="p-4 border-t border-border relative" ref={userMenuRef}>
           <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-foreground hover:bg-accent transition-colors"
+            onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-foreground hover:bg-accent transition-colors"
           >
-            <LogOut className="w-5 h-5" />
-            <span>Logout</span>
+            <div className="w-10 h-10 rounded-full bg-rewards-primary text-white flex items-center justify-center font-semibold text-sm flex-shrink-0">
+              {getUserInitials()}
+            </div>
+            <div className="flex-1 text-left min-w-0">
+              <p className="text-sm font-medium text-foreground truncate">{getUserName()}</p>
+              <p className="text-xs text-muted-foreground truncate">{session?.user?.email}</p>
+            </div>
+            <ChevronUp className={`w-4 h-4 flex-shrink-0 transition-transform ${isUserMenuOpen ? '' : 'rotate-180'}`} />
           </button>
+
+          {/* User Menu Dropdown */}
+          {isUserMenuOpen && (
+            <div className="absolute bottom-full left-0 right-0 mb-2 bg-card border border-border rounded-lg shadow-lg overflow-hidden z-50">
+              <button
+                onClick={() => {
+                  setIsUserMenuOpen(false)
+                  // TODO: Open feedback dialog
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3 text-left text-foreground hover:bg-accent transition-colors"
+              >
+                <MessageSquare className="w-4 h-4" />
+                <span className="text-sm">Feedback</span>
+              </button>
+              <button
+                onClick={() => {
+                  setIsUserMenuOpen(false)
+                  // TODO: Open support dialog
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3 text-left text-foreground hover:bg-accent transition-colors"
+              >
+                <HelpCircle className="w-4 h-4" />
+                <span className="text-sm">Support</span>
+              </button>
+              <div className="border-t border-border" />
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center gap-3 px-4 py-3 text-left text-foreground hover:bg-accent transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="text-sm">Log Out</span>
+              </button>
+            </div>
+          )}
         </div>
       </aside>
 

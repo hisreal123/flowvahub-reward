@@ -1,11 +1,10 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { toast } from 'sonner'
-import logoImage from '../assets/images/image.png'
 import { useAuth } from '../context/AuthContext.tsx'
-import { Loader2Icon, Eye, EyeOff } from 'lucide-react'
+import { Loader2Icon } from 'lucide-react'
 
 export function SignupPage() {
   const [email, setEmail] = useState('')
@@ -13,23 +12,38 @@ export function SignupPage() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const { signUp } = useAuth()
+  const referralCode = searchParams.get('ref') || undefined
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
+    // Frontend validation: passwords must match
     if (password !== confirmPassword) {
       toast.error('Passwords do not match')
       return
     }
 
+    // Extract name from email for backend requirements
+    const emailUsername = email.split('@')[0] || 'User'
+    const firstName = emailUsername.charAt(0).toUpperCase() + emailUsername.slice(1)
+    const lastName = 'User' // Default last name
+
     try {
       setLoading(true)
       try {
-        await signUp(email, password)
-        navigate('/login')
+        await signUp(email, password, {
+          firstName,
+          lastName,
+          gender: undefined,
+          referralCode,
+        })
+        
+        await new Promise(resolve => setTimeout(resolve, 300))
+        navigate('/rewards', { replace: true })
       } catch (error: unknown) {
         toast.error((error as Error).message)
         return
@@ -40,21 +54,12 @@ export function SignupPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <div className="w-full max-w-md space-y-8 rounded-[16px] border border-[#f3f4f6] bg-card p-8 shadow-[0_5px_15px_rgba(0,_0,_0,_0.05)]">
-        {/* Logo */}
-        <div className="flex justify-center">
-          <img 
-            src={logoImage} 
-            alt="FlowvaHub Logo" 
-            className="w-32 h-32 object-contain"
-          />
-        </div>
-
+    <div className="flex min-h-screen items-center justify-center bg-rewards-primary p-4">
+      <div className="w-full max-w-md space-y-6 rounded-[16px] bg-white p-8 shadow-lg">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-black">Create Account</h1>
+          <h1 className="text-3xl font-bold text-black">Log in to flowva</h1>
           <p className="mt-2 text-gray-600">
-            Sign up for FlowvaHub and start earning rewards
+            Log in to receive personalized recommendations
           </p>
         </div>
 
@@ -66,7 +71,7 @@ export function SignupPage() {
             <Input
               id="email"
               type="email"
-              placeholder="you@example.com"
+              placeholder="your@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="border-gray-200 focus:border-rewards-primary focus:ring-rewards-primary"
@@ -85,16 +90,15 @@ export function SignupPage() {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="border-gray-200 focus:border-rewards-primary focus:ring-rewards-primary pr-10"
+                className="border-gray-200 focus:border-rewards-primary focus:ring-rewards-primary pr-20"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors text-sm font-medium"
               >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                {showPassword ? 'hide' : 'show'}
               </button>
             </div>
           </div>
@@ -110,16 +114,15 @@ export function SignupPage() {
                 placeholder="••••••••"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="border-gray-200 focus:border-rewards-primary focus:ring-rewards-primary pr-10"
+                className="border-gray-200 focus:border-rewards-primary focus:ring-rewards-primary pr-20"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
-                aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors text-sm font-medium"
               >
-                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                {showConfirmPassword ? 'hide' : 'show'}
               </button>
             </div>
           </div>
@@ -127,9 +130,9 @@ export function SignupPage() {
           <Button 
             type="submit" 
             disabled={loading}
-            className="w-full bg-rewards-primary hover:bg-[#7a0fe0] text-white font-semibold py-6 rounded-lg transition-all duration-200"
+            className="w-full bg-rewards-primary hover:bg-[#7a0fe0] text-white font-semibold py-6 rounded-xl transition-all duration-200"
           >
-            {loading ? <Loader2Icon className="size-4 animate-spin" /> : 'Sign Up'}
+            {loading ? <Loader2Icon className="size-4 animate-spin" /> : 'Sign up Account'}
           </Button>
         </form>
 

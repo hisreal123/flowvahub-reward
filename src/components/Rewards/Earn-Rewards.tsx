@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Button } from '../ui/button'
 import { EarnMorePointsCard } from './EarnMorePointsCard'
 import { Share2, Star } from 'lucide-react'
@@ -6,18 +6,29 @@ import { SpotlightCard } from './SpotlightCard'
 import { useAuth } from '../../context/AuthContext'
 import { useUserPoints } from '../../hooks/useUserPoints'
 import { useDailyClaim } from '../../hooks/useDailyClaim'
+import { useReferrals } from '../../hooks/useReferrals'
+import { useUserProfile } from '../../hooks/useUserProfile'
 import { PointBalanceCard } from './PointBalanceCard'
 import { DailyStreakCard } from './DailyStreakCard'
 import { ReferralSection } from './ReferralSection'
 import { ShareStackDialog } from './ShareStackDialog'
 
-const REFERRAL_LINK = 'https://app.flowvahub.com/signup/?ref=georg2343'
+const BASE_URL = 'https://flowvahub-reward.vercel.app'
 
 const EarnRewards = () => {
   const { session } = useAuth()
   const { totalPoints, streakDays, refetch } = useUserPoints(session)
   const { isClaimed, isLoading, claimDailyReward } = useDailyClaim(session, refetch)
+  const { referralCount, pointsEarned } = useReferrals(session)
+  const { profile, loading: profileLoading } = useUserProfile(session)
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
+
+  const referralLink = useMemo(() => {
+    if (!profile?.referral_code) {
+      return `${BASE_URL}/signup`
+    }
+    return `${BASE_URL}/signup/?ref=${profile.referral_code}`
+  }, [profile])
 
   return (
     <>
@@ -81,7 +92,13 @@ const EarnRewards = () => {
         </div>
       </main>
 
-      <ReferralSection referralLink={REFERRAL_LINK} />
+      <ReferralSection
+        referralLink={referralLink}
+        referralCount={referralCount}
+        pointsEarned={pointsEarned}
+        isLoading={profileLoading}
+        hasReferralCode={!!profile?.referral_code}
+      />
 
       <ShareStackDialog open={isShareDialogOpen} onOpenChange={setIsShareDialogOpen} />
     </>
