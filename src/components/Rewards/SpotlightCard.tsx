@@ -52,7 +52,8 @@ export function SpotlightCard() {
         </Button>
         <Button 
           variant="outline" 
-          className="bg-[linear-gradient(45deg,#9013FE,#FF8687)] text-white  py-2 px-4 rounded-full font-semibold text-sm"
+          disabled
+          className="bg-[linear-gradient(45deg,#9013FE,#FF8687)] text-white py-2 px-4 rounded-full font-semibold text-sm cursor-not-allowed"
         >
           <Gift className='stroke-white transition-colors duration-200 w-4 h-4' />
           <span className='text-sm'>Claim 50 pts</span>

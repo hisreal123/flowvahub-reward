@@ -47,15 +47,12 @@ export function FeedbackModal({ open, onOpenChange, userName }: FeedbackModalPro
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg border-rewards-primary">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold text-black">
-            Hi {userName}!
+          <DialogTitle className="text-xl font-semibold text-black text-[var(--rewards-primary)]">
+            Hi {userName}! We'd love to hear from you.
           </DialogTitle>
-          <DialogDescription className="text-gray-600 pt-2">
-            We'd love to hear from you.
-          </DialogDescription>
-          <DialogDescription className="text-gray-600">
+          <DialogDescription className="text-gray-600 pt-2 text-xs md:text-sm">
             Got suggestions on how we can improve? Share your feedback with us. We'll get back to you.
           </DialogDescription>
         </DialogHeader>
@@ -65,7 +62,7 @@ export function FeedbackModal({ open, onOpenChange, userName }: FeedbackModalPro
             placeholder="Type your feedback here"
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
-            className="min-h-[120px]"
+            className="min-h-[120px] text-xs md:text-sm bg-gray-100 placeholder:text-gray-400 focus-visible:border-rewards-primary focus-visible:ring-rewards-primary/50 focus-visible:ring-[3px]"
           />
         </div>
 

@@ -5,22 +5,30 @@ import logoImage from '../assets/images/image.png'
 import { useAuth } from '../context/AuthContext'
 import { useUserProfile } from '../hooks/useUserProfile'
 import { FeedbackModal } from './FeedbackModal'
+import { LogoutConfirmationModal } from './LogoutConfirmationModal'
 
 export function DashboardLayout() {
   const navigate = useNavigate()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false)
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
   const { signOut, session } = useAuth()
   const { profile, loading: profileLoading } = useUserProfile(session)
   const userMenuRef = useRef<HTMLDivElement>(null)
 
   const handleLogout = async () => {
+    setIsLoggingOut(true)
     try {
       await signOut()
       navigate('/login')
       setIsUserMenuOpen(false)
+      setIsLogoutModalOpen(false)
     } catch (error) {
       console.error('Logout error:', error)
+    } finally {
+      setIsLoggingOut(false)
     }
   }
 
@@ -35,14 +43,11 @@ export function DashboardLayout() {
   }
 
   const getUserName = () => {
-    // Check if profile has valid first_name and last_name (not empty strings)
     if (profile?.first_name?.trim() && profile?.last_name?.trim()) {
       return `${profile.first_name} ${profile.last_name}`
     }
-    // Fallback to email prefix if available
     if (session?.user?.email) {
       const emailPrefix = session.user.email.split('@')[0]
-      // Capitalize first letter
       return emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1)
     }
     return 'User'
@@ -56,7 +61,6 @@ export function DashboardLayout() {
     setIsSidebarOpen(false)
   }
 
-  // Close user menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
@@ -87,15 +91,6 @@ export function DashboardLayout() {
 
   return (
     <div className="flex h-screen bg-background">
-      {/* Mobile Menu Button */}
-      <button
-        onClick={toggleSidebar}
-        className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-card border border-border text-foreground hover:bg-accent transition-colors"
-        aria-label="Toggle menu"
-      >
-        <Menu className="w-6 h-6" />
-      </button>
-
       {/* Backdrop Overlay */}
       {isSidebarOpen && (
         <div
@@ -152,8 +147,8 @@ export function DashboardLayout() {
         </nav>
 
           <div className="border-t border-[0.3px] border-border border-gray-300 w-[90%] mx-auto" />
-        {/* User Profile Section */}
 
+        {/* User Profile Section */}
         <div className="p-4  relative" ref={userMenuRef}>
           <button
             onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
@@ -170,28 +165,13 @@ export function DashboardLayout() {
 
           {/* User Menu Dropdown */}
           {isUserMenuOpen && (
-            <div className="absolute bottom-16 left-6 w-56 bg-white border-[#9013FE] border text-black rounded-lg shadow-lg">
+            <div className="absolute bottom-20 left-6 w-56 bg-white border-[#9013FE] border text-black rounded-lg shadow-lg p-2">
               <button
                 onClick={() => {
                   setIsUserMenuOpen(false)
-                  // TODO: Open feedback dialog
+                  setIsLogoutModalOpen(true)
                 }}
-                className="w-full flex items-center gap-3 px-4 py-3 text-left text-foreground hover:bg-accent transition-colors"
-              >
-                <span className="text-sm">Feedback</span>
-              </button>
-              <button
-                onClick={() => {
-                  setIsUserMenuOpen(false)
-                  // TODO: Open support dialog
-                }}
-                className="w-full flex items-center gap-3 px-4 py-3 text-left text-foreground hover:bg-accent transition-colors"
-              >
-                <span className="text-sm">Support</span>
-              </button>
-              <button
-                onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-4 py-3 text-left text-foreground hover:bg-accent transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-1 text-left text-foreground hover:bg-accent transition-colors"
               >
                 <span className="text-sm">Log Out</span>
               </button>
@@ -202,10 +182,36 @@ export function DashboardLayout() {
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto">
+        {/* Mobile Header with Menu Button */}
+        <div className="md:hidden sticky top-0 z-30 bg-background border-b border-border p-4 flex items-center gap-3">
+          <button
+            onClick={toggleSidebar}
+            className="p-2 rounded-lg bg-card text-foreground hover:bg-accent transition-colors"
+            aria-label="Toggle menu"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+          <h1 className="text-lg font-semibold text-foreground">Rewards Hub</h1>
+        </div>
         <div className="p-6">
           <Outlet />
         </div>
       </main>
+
+      {/* Feedback Modal */}
+      <FeedbackModal
+        open={isFeedbackModalOpen}
+        onOpenChange={setIsFeedbackModalOpen}
+        userName={getUserName()}
+      />
+
+      {/* Logout Confirmation Modal */}
+      <LogoutConfirmationModal
+        open={isLogoutModalOpen}
+        onOpenChange={setIsLogoutModalOpen}
+        onConfirm={handleLogout}
+        isLoading={isLoggingOut}
+      />
     </div>
   )
 }
