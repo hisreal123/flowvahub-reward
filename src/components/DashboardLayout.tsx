@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
-import { LogOut, Menu, X, Loader2Icon, MessageSquare, HelpCircle } from 'lucide-react'
+import { Menu, X, Loader2Icon } from 'lucide-react'
 import logoImage from '../assets/images/image.png'
 import { useAuth } from '../context/AuthContext'
 import { useUserProfile } from '../hooks/useUserProfile'
+import { FeedbackModal } from './FeedbackModal'
 
 export function DashboardLayout() {
   const navigate = useNavigate()
