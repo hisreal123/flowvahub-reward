@@ -79,7 +79,7 @@ export function ReferralSection({
           ) : (
             <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3">
               <p className="text-sm text-yellow-800">
-                <strong>Referral code not found.</strong> Please refresh the page or contact support.
+                <strong>Referral code not found.</strong> Please refresh the page.
               </p>
             </div>
           )}
